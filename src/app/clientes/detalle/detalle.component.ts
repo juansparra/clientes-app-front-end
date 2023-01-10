@@ -43,10 +43,11 @@ if(!this.fotoSeleccionada){
       } else if(event.type === HttpEventType.Response){
         let response: any = event.body;
         this.cliente = response.cliente as Cliente;
-      }
 
+        this.modalService.notificarUpload.emit(this.cliente);
       //this.cliente = cliente;
       Swal.fire('La foto se ha subido correctamente!',`La foto se ha subido con exito: ${this.cliente.foto}`, 'success');
+    }
     });
   }
 }
