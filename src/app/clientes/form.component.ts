@@ -5,6 +5,7 @@ import { Router,ActivatedRoute } from '@angular/router';
 import  swal  from 'sweetalert2';
 import { Observable } from 'rxjs';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { Region } from './region';
 
 @Component({
    selector: 'app-form',
@@ -14,12 +15,14 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
  })
 export class FormComponent implements OnInit {
      cliente: Cliente = new Cliente()
+     regiones: Region[];
      titulo: string = "Crear Cliente"
   constructor(private clienteService: ClienteService,
    private router: Router, private activatedRoute: ActivatedRoute 
    ){}
    ngOnInit(){
       this.cargarCliente();
+     this.clienteService.getRegiones().subscribe(regiones => {this.regiones = regiones}) 
 }
 public cargarCliente(): void{
    this.activatedRoute.params.subscribe(params => {
@@ -31,6 +34,7 @@ public cargarCliente(): void{
 }
 // primera forma para tomar el nombre o mensaje desde el back
 update(): void{
+   console.log(this.cliente);
    this.clienteService.update(this.cliente)
    .subscribe( json =>{
       this.router.navigate(['/clientes'])
@@ -39,10 +43,22 @@ update(): void{
 }
 // indicando el tipo de dato desde cliente service ts con un map
 create(): void {
+   console.log(this.cliente);
     this.clienteService.create(this.cliente).subscribe(
       cliente => {this.router.navigate(['/clientes'])
    swal.fire('Nuevo cliente',`cliente ${cliente.nombre} creado con exito!`,'success')   
    }
       )
 }
+
+
+compararRegion (o1:Region,o2:Region): boolean{
+   if(o1 === undefined && o2 === undefined){
+      return true;
+   }
+   return o1 == null || o2 == null? false: o1.id === o2.id;  
+}
+
+
+
 }
